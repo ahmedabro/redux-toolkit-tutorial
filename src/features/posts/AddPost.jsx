@@ -16,12 +16,9 @@ const AddPost = () => {
     const onSavePost = () => {
         if (title && content) {
             dispatch(
-                addPost({
-                    id: nanoid(),
-                    title,
-                    content,
-                })
-            ) 
+                addPost(title, content)
+            ) // but we can make it more better with removing this addPost logic and adding it into 
+              // postsSlice prepare callback.
         }
         setTitle("")
         setContent("")
