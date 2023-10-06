@@ -26,6 +26,7 @@ const AddPost = () => {
         }
         setTitle("")
         setContent("")
+        setUserId("")
     }
 
     const canSave = Boolean(title) && Boolean(content) && Boolean(userId)
