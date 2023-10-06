@@ -1,28 +1,40 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux"
-import { nanoid } from "@reduxjs/toolkit"
+import { useDispatch, useSelector } from "react-redux"
+import { selectAllUsers } from "../users/usersSlice";
 import { addPost } from "./postsSlice";
 
 const AddPost = () => {
 
+    const dispatch = useDispatch()
+
     const [title, setTitle] = useState('')
     const [content, setContent] = useState('')
+    const [userId, setUserId] = useState('')
 
-    const dispatch = useDispatch()
+    const users = useSelector(selectAllUsers)
 
     const onTitleChanged = e => setTitle(e.target.value)
     const onContentChanged = e => setContent(e.target.value)
+    const onAuthorChanged = e => setUserId(e.target.value)
 
     const onSavePost = () => {
         if (title && content) {
             dispatch(
-                addPost(title, content)
+                addPost(title, content, userId)
             ) // but we can make it more better with removing this addPost logic and adding it into 
               // postsSlice prepare callback.
         }
         setTitle("")
         setContent("")
     }
+
+    const canSave = Boolean(title) && Boolean(content) && Boolean(userId)
+
+    const usersOptions = users.map(user => (
+        <option key={user.id} value={user.id}>
+            {user.name}
+        </option>
+    ))
 
     return (
         <section>
@@ -36,11 +48,11 @@ const AddPost = () => {
                     value={title}
                     onChange={onTitleChanged}
                 />
-                {/* <label htmlFor="postAuthor">Author:</label>
+                <label htmlFor="postAuthor">Author:</label>
                 <select id="postAuthor" value={userId} onChange={onAuthorChanged}>
                     <option value=""></option>
                     {usersOptions}
-                </select> */}
+                </select>
                 <label htmlFor="postContent">Content:</label>
                 <textarea
                     id="postContent"
@@ -51,6 +63,7 @@ const AddPost = () => {
                 <button
                     type="button"
                     onClick={onSavePost}
+                    disabled={!canSave}
                 >Save Post</button>
             </form>
         </section>
